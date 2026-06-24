@@ -684,4 +684,1072 @@
             backdrop-filter: blur(12px);
             border-color: rgba(255, 255, 255, 0.05);
         }
-        .app
+        .app-dark .chat-window {
+            background: rgba(0, 0, 0, 0.4);
+            border-color: rgba(255, 255, 255, 0.03);
+        }
+        .app-dark .message {
+            background: rgba(30, 30, 40, 0.6);
+            color: #eaeaea;
+            border-color: rgba(255, 255, 255, 0.03);
+        }
+        .app-dark .message strong { color: #f7d794; }
+        .app-dark #nickDisplay { color: #eee; }
+        .app-dark .profile-area {
+            background: rgba(0, 0, 0, 0.25);
+            border-color: rgba(255,255,255,0.05);
+        }
+        .app-dark .input-area input[type="text"] {
+            background: rgba(0, 0, 0, 0.4);
+            color: #eee;
+            border-color: rgba(255,255,255,0.05);
+        }
+        .app-dark .input-area input[type="text"]::placeholder { color: #888; }
+        .app-dark .action-btn {
+            color: #ccc;
+            background: rgba(255,255,255,0.05);
+            border-color: rgba(255,255,255,0.05);
+        }
+        .app-dark .action-btn.send-btn { color: white; }
+        .app-dark .theme-btn { color: #aaa; }
+        .app-dark .theme-btn.active-dark {
+            background: rgba(255, 255, 255, 0.12);
+            color: #fff;
+            box-shadow: 0 0 8px rgba(255, 255, 255, 0.08);
+        }
+        .app-dark .nick-edit-btn { color: #aaa; }
+        .app-dark .brand { color: #eee; }
+
+        .app-red .sidebar {
+            background: rgba(180, 20, 20, 0.25);
+            border-color: rgba(255, 80, 80, 0.1);
+        }
+        .app-red .sidebar-title { color: #ffaaaa; }
+        .app-red .chat-item { color: #ffcccc; }
+        .app-red .chat-item:hover { background: rgba(255,80,80,0.08); color: #fff; }
+        .app-red .chat-item.active {
+            background: rgba(255,80,80,0.12);
+            border-color: rgba(255,80,80,0.15);
+            color: #fff;
+        }
+        .app-red .chat-app {
+            background: rgba(180, 20, 20, 0.3);
+            backdrop-filter: blur(12px);
+            border-color: rgba(255, 80, 80, 0.2);
+            box-shadow: 0 20px 40px rgba(180, 0, 0, 0.25);
+        }
+        .app-red .chat-window {
+            background: rgba(100, 0, 0, 0.15);
+            border-color: rgba(255, 80, 80, 0.08);
+        }
+        .app-red .message {
+            background: rgba(200, 50, 50, 0.15);
+            color: #ffe0e0;
+            border-color: rgba(255, 80, 80, 0.08);
+        }
+        .app-red .message strong { color: #ffb0b0; }
+        .app-red #nickDisplay { color: #ffdddd; }
+        .app-red .profile-area {
+            background: rgba(100, 0, 0, 0.15);
+            border-color: rgba(255, 80, 80, 0.1);
+        }
+        .app-red .input-area input[type="text"] {
+            background: rgba(100, 0, 0, 0.15);
+            color: #ffdddd;
+            border-color: rgba(255, 80, 80, 0.1);
+        }
+        .app-red .input-area input[type="text"]::placeholder { color: #cc8888; }
+        .app-red .action-btn {
+            color: #ffcccc;
+            background: rgba(180, 0, 0, 0.12);
+            border-color: rgba(255, 80, 80, 0.08);
+        }
+        .app-red .action-btn.send-btn { 
+            background: linear-gradient(135deg, #ff6b6b, #c0392b);
+            color: white;
+        }
+        .app-red .theme-btn { color: #ffbbbb; }
+        .app-red .theme-btn.active-red {
+            background: rgba(255, 0, 0, 0.2);
+            color: #fff;
+            box-shadow: 0 0 12px rgba(255, 0, 0, 0.25);
+        }
+        .app-red .nick-edit-btn { color: #ffaaaa; }
+        .app-red .brand { color: #ffcccc; }
+        .app-red .chat-item .chat-badge { background: rgba(255,80,80,0.15); color: #ffaaaa; }
+        .app-red .online-user { color: #ffcccc; }
+
+        .app-blue .sidebar {
+            background: rgba(20, 60, 180, 0.25);
+            border-color: rgba(80, 150, 255, 0.1);
+        }
+        .app-blue .sidebar-title { color: #88bbdd; }
+        .app-blue .chat-item { color: #bbddff; }
+        .app-blue .chat-item:hover { background: rgba(80,150,255,0.08); color: #fff; }
+        .app-blue .chat-item.active {
+            background: rgba(80,150,255,0.12);
+            border-color: rgba(80,150,255,0.15);
+            color: #fff;
+        }
+        .app-blue .chat-app {
+            background: rgba(20, 60, 180, 0.3);
+            backdrop-filter: blur(12px);
+            border-color: rgba(80, 150, 255, 0.2);
+            box-shadow: 0 20px 40px rgba(0, 40, 180, 0.25);
+        }
+        .app-blue .chat-window {
+            background: rgba(0, 30, 120, 0.15);
+            border-color: rgba(80, 150, 255, 0.08);
+        }
+        .app-blue .message {
+            background: rgba(50, 100, 220, 0.15);
+            color: #ddeeff;
+            border-color: rgba(80, 150, 255, 0.08);
+        }
+        .app-blue .message strong { color: #aacdff; }
+        .app-blue #nickDisplay { color: #ddeeff; }
+        .app-blue .profile-area {
+            background: rgba(0, 30, 120, 0.15);
+            border-color: rgba(80, 150, 255, 0.1);
+        }
+        .app-blue .input-area input[type="text"] {
+            background: rgba(0, 30, 120, 0.15);
+            color: #ddeeff;
+            border-color: rgba(80, 150, 255, 0.1);
+        }
+        .app-blue .input-area input[type="text"]::placeholder { color: #88aadd; }
+        .app-blue .action-btn {
+            color: #bbddff;
+            background: rgba(0, 60, 200, 0.12);
+            border-color: rgba(80, 150, 255, 0.08);
+        }
+        .app-blue .action-btn.send-btn {
+            background: linear-gradient(135deg, #4a8eff, #1a5bbf);
+            color: white;
+        }
+        .app-blue .theme-btn { color: #bbddff; }
+        .app-blue .theme-btn.active-blue {
+            background: rgba(0, 100, 255, 0.2);
+            color: #fff;
+            box-shadow: 0 0 12px rgba(0, 100, 255, 0.25);
+        }
+        .app-blue .nick-edit-btn { color: #88bbee; }
+        .app-blue .brand { color: #bbddff; }
+
+        .app-green .sidebar {
+            background: rgba(20, 140, 60, 0.25);
+            border-color: rgba(80, 255, 150, 0.1);
+        }
+        .app-green .sidebar-title { color: #88dd88; }
+        .app-green .chat-item { color: #bbffbb; }
+        .app-green .chat-item:hover { background: rgba(80,255,150,0.08); color: #fff; }
+        .app-green .chat-item.active {
+            background: rgba(80,255,150,0.12);
+            border-color: rgba(80,255,150,0.15);
+            color: #fff;
+        }
+        .app-green .chat-app {
+            background: rgba(20, 140, 60, 0.3);
+            backdrop-filter: blur(12px);
+            border-color: rgba(80, 255, 150, 0.2);
+            box-shadow: 0 20px 40px rgba(0, 140, 40, 0.25);
+        }
+        .app-green .chat-window {
+            background: rgba(0, 100, 30, 0.15);
+            border-color: rgba(80, 255, 150, 0.08);
+        }
+        .app-green .message {
+            background: rgba(50, 200, 100, 0.15);
+            color: #ddffdd;
+            border-color: rgba(80, 255, 150, 0.08);
+        }
+        .app-green .message strong { color: #aaffaa; }
+        .app-green #nickDisplay { color: #ddffdd; }
+        .app-green .profile-area {
+            background: rgba(0, 100, 30, 0.15);
+            border-color: rgba(80, 255, 150, 0.1);
+        }
+        .app-green .input-area input[type="text"] {
+            background: rgba(0, 100, 30, 0.15);
+            color: #ddffdd;
+            border-color: rgba(80, 255, 150, 0.1);
+        }
+        .app-green .input-area input[type="text"]::placeholder { color: #88dd88; }
+        .app-green .action-btn {
+            color: #bbffbb;
+            background: rgba(0, 180, 60, 0.12);
+            border-color: rgba(80, 255, 150, 0.08);
+        }
+        .app-green .action-btn.send-btn {
+            background: linear-gradient(135deg, #4caf50, #2e7d32);
+            color: white;
+        }
+        .app-green .theme-btn { color: #bbffbb; }
+        .app-green .theme-btn.active-green {
+            background: rgba(0, 200, 100, 0.2);
+            color: #fff;
+            box-shadow: 0 0 12px rgba(0, 200, 100, 0.25);
+        }
+        .app-green .nick-edit-btn { color: #88ee88; }
+        .app-green .brand { color: #bbffbb; }
+
+        .app-purple .sidebar {
+            background: rgba(120, 20, 180, 0.25);
+            border-color: rgba(200, 100, 255, 0.1);
+        }
+        .app-purple .sidebar-title { color: #bb88dd; }
+        .app-purple .chat-item { color: #ddbbff; }
+        .app-purple .chat-item:hover { background: rgba(200,100,255,0.08); color: #fff; }
+        .app-purple .chat-item.active {
+            background: rgba(200,100,255,0.12);
+            border-color: rgba(200,100,255,0.15);
+            color: #fff;
+        }
+        .app-purple .chat-app {
+            background: rgba(120, 20, 180, 0.3);
+            backdrop-filter: blur(12px);
+            border-color: rgba(200, 100, 255, 0.2);
+            box-shadow: 0 20px 40px rgba(100, 0, 180, 0.25);
+        }
+        .app-purple .chat-window {
+            background: rgba(80, 0, 130, 0.15);
+            border-color: rgba(200, 100, 255, 0.08);
+        }
+        .app-purple .message {
+            background: rgba(150, 50, 220, 0.15);
+            color: #f0ddff;
+            border-color: rgba(200, 100, 255, 0.08);
+        }
+        .app-purple .message strong { color: #dbb0ff; }
+        .app-purple #nickDisplay { color: #f0ddff; }
+        .app-purple .profile-area {
+            background: rgba(80, 0, 130, 0.15);
+            border-color: rgba(200, 100, 255, 0.1);
+        }
+        .app-purple .input-area input[type="text"] {
+            background: rgba(80, 0, 130, 0.15);
+            color: #f0ddff;
+            border-color: rgba(200, 100, 255, 0.1);
+        }
+        .app-purple .input-area input[type="text"]::placeholder { color: #bb88dd; }
+        .app-purple .action-btn {
+            color: #ddbbff;
+            background: rgba(140, 0, 200, 0.12);
+            border-color: rgba(200, 100, 255, 0.08);
+        }
+        .app-purple .action-btn.send-btn {
+            background: linear-gradient(135deg, #b46aff, #7b2fbe);
+            color: white;
+        }
+        .app-purple .theme-btn { color: #ddbbff; }
+        .app-purple .theme-btn.active-purple {
+            background: rgba(180, 0, 255, 0.2);
+            color: #fff;
+            box-shadow: 0 0 12px rgba(180, 0, 255, 0.25);
+        }
+        .app-purple .nick-edit-btn { color: #bb88ee; }
+        .app-purple .brand { color: #ddbbff; }
+
+        @media (max-width: 700px) {
+            .app-wrapper {
+                flex-direction: column;
+            }
+            .sidebar {
+                flex: none;
+                width: 100%;
+                max-height: 100px;
+                overflow-y: auto;
+                padding: 12px 14px;
+                border-radius: 24px;
+            }
+            .chat-list {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+            .chat-item {
+                flex: 0 1 auto;
+                padding: 6px 12px;
+            }
+            .chat-item .chat-badge {
+                display: none;
+            }
+            .sidebar-title {
+                margin-bottom: 6px;
+                font-size: 0.6rem;
+            }
+            .call-section {
+                margin-top: 8px;
+                padding-top: 8px;
+            }
+            #onlineUsers {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+            .online-user {
+                font-size: 0.75rem;
+                padding: 4px 8px;
+            }
+            .online-user .status-dot {
+                display: none;
+            }
+            .call-modal video {
+                width: 95%;
+            }
+            .call-modal .call-controls button {
+                width: 44px;
+                height: 44px;
+                font-size: 1rem;
+            }
+        }
+        @media (max-width: 500px) {
+            .chat-app { padding: 14px; }
+            .header { flex-direction: column; align-items: stretch; }
+            .theme-toggles { justify-content: center; }
+            .profile-area { justify-content: center; }
+            .brand { font-size: 1rem; }
+            .input-area input[type="text"] { flex: 1 1 100%; }
+            .action-btn { font-size: 0.7rem; padding: 6px 10px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-wrapper">
+        <!-- ===== БОКОВАЯ ПАНЕЛЬ ===== -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-title"><i class="fas fa-comments"></i> Чаты</div>
+            <div class="chat-list" id="chatList">
+                <div class="chat-item active" data-chat="main">
+                    <i class="fas fa-home"></i>
+                    <span class="chat-name">Общий чат</span>
+                    <span class="chat-badge" id="chatBadge">0</span>
+                </div>
+            </div>
+
+            <div class="call-section">
+                <div class="sidebar-title"><i class="fas fa-phone"></i> Звонки</div>
+                <div id="onlineUsers">
+                    <div style="color: rgba(255,255,255,0.3); font-size: 0.75rem; padding: 4px;">Нет онлайн-пользователей</div>
+                </div>
+                <div id="callStatus">
+                    <i class="fas fa-phone"></i> <span id="callStatusText">Идет общий звонок</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== ОСНОВНОЙ ЧАТ ===== -->
+        <div class="chat-app" id="chatApp">
+            <div class="header">
+                <div class="brand" id="brandLogo">
+                    <i class="fas fa-crown"></i>
+                    <span id="brandText">Bober Chat</span>
+                </div>
+
+                <div class="theme-toggles" id="themeToggles">
+                    <button class="theme-btn active-light" data-theme="light"><i class="fas fa-sun"></i></button>
+                    <button class="theme-btn" data-theme="dark"><i class="fas fa-moon"></i></button>
+                    <button class="theme-btn" data-theme="red"><i class="fas fa-heart"></i></button>
+                    <button class="theme-btn" data-theme="blue"><i class="fas fa-droplet"></i></button>
+                    <button class="theme-btn" data-theme="green"><i class="fas fa-leaf"></i></button>
+                    <button class="theme-btn" data-theme="purple"><i class="fas fa-gem"></i></button>
+                </div>
+
+                <div class="profile-area">
+                    <div class="avatar-wrapper" id="avatarWrapper">
+                        <div class="avatar-emoji" id="avatarEmoji">👤</div>
+                        <img id="avatarImg" style="display:none;" alt="avatar" />
+                        <div class="avatar-overlay"><i class="fas fa-camera"></i></div>
+                    </div>
+                    <div class="nick-wrapper">
+                        <input type="text" id="nickDisplay" value="Гость" maxlength="20" spellcheck="false">
+                        <button class="nick-edit-btn" id="editNickBtn" title="Сменить ник"><i class="fas fa-pen"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chat-window" id="chatWindow">
+                <div class="message message-other"><strong>🤖 Бот:</strong> Добро пожаловать в Bober Chat!</div>
+            </div>
+
+            <div class="input-area">
+                <input type="text" id="msgInput" placeholder="Напиши сообщение..." />
+                <button class="action-btn send-btn" id="sendMsgBtn"><i class="fas fa-paper-plane"></i></button>
+                <button class="action-btn img-btn" id="addImgBtn"><i class="fas fa-image"></i> Картинка</button>
+                <button class="action-btn upload-btn" id="uploadBtn"><i class="fas fa-upload"></i> Своё</button>
+                <button class="action-btn call-btn" id="callBtn"><i class="fas fa-phone"></i> <span id="callBtnText">Звонок</span></button>
+                <button class="action-btn join-call-btn" id="joinCallBtn"><i class="fas fa-sign-in-alt"></i> Присоединиться</button>
+                <input type="file" id="fileInput" accept="image/*">
+            </div>
+
+            <div style="margin-top: 8px; text-align: center; font-size: 0.65rem; opacity: 0.3; color: #ccc;">
+                <i class="fas fa-phone"></i> Нажми "Звонок" для общего разговора
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== МОДАЛ ЗВОНКА ===== -->
+    <div class="call-modal" id="callModal">
+        <div class="call-info" id="callInfo">Общий звонок</div>
+        <div class="participants-list" id="participantsList"></div>
+        <video id="remoteVideo" autoplay playsinline></video>
+        <video id="localVideo" autoplay playsinline muted style="width: 160px; max-width: 160px; position: fixed; bottom: 100px; right: 20px; border-radius: 12px; border: 2px solid rgba(255,255,255,0.15);"></video>
+        <div class="call-controls">
+            <button class="mute-btn" id="muteBtn"><i class="fas fa-microphone"></i></button>
+            <button class="hangup-btn" id="hangupBtn"><i class="fas fa-phone-slash"></i></button>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            'use strict';
+
+            // ============ ПОДКЛЮЧЕНИЕ ============
+            const socket = io();
+            
+            // ============ PEERJS ============
+            let peer = null;
+            let currentCall = null;
+            let localStream = null;
+            let remoteStream = null;
+            let myPeerId = null;
+            let isMuted = false;
+            let callActive = false;
+            let isCallInitiator = false;
+
+            // ============ DOM ============
+            const chatWindow = document.getElementById('chatWindow');
+            const msgInput = document.getElementById('msgInput');
+            const sendBtn = document.getElementById('sendMsgBtn');
+            const addImgBtn = document.getElementById('addImgBtn');
+            const uploadBtn = document.getElementById('uploadBtn');
+            const fileInput = document.getElementById('fileInput');
+            const nickInput = document.getElementById('nickDisplay');
+            const editNickBtn = document.getElementById('editNickBtn');
+            const avatarWrapper = document.getElementById('avatarWrapper');
+            const avatarEmoji = document.getElementById('avatarEmoji');
+            const avatarImg = document.getElementById('avatarImg');
+            const themeToggles = document.getElementById('themeToggles');
+            const chatList = document.getElementById('chatList');
+            const chatBadge = document.getElementById('chatBadge');
+            const callBtn = document.getElementById('callBtn');
+            const callBtnText = document.getElementById('callBtnText');
+            const joinCallBtn = document.getElementById('joinCallBtn');
+            const callModal = document.getElementById('callModal');
+            const callInfo = document.getElementById('callInfo');
+            const participantsList = document.getElementById('participantsList');
+            const remoteVideo = document.getElementById('remoteVideo');
+            const localVideo = document.getElementById('localVideo');
+            const muteBtn = document.getElementById('muteBtn');
+            const hangupBtn = document.getElementById('hangupBtn');
+            const onlineUsersDiv = document.getElementById('onlineUsers');
+            const callStatus = document.getElementById('callStatus');
+            const callStatusText = document.getElementById('callStatusText');
+
+            // ============ ПЕРЕМЕННЫЕ ============
+            let currentNick = localStorage.getItem('chatNick') || 'Гость';
+            let currentAvatar = localStorage.getItem('chatAvatarEmoji') || '👤';
+            let currentChat = 'main';
+            let messageCount = 0;
+            let onlineUsers = {};
+            let callParticipants = [];
+            let callPeerId = null;
+
+            // ============ ИНИЦИАЛИЗАЦИЯ ============
+            nickInput.value = currentNick;
+            avatarEmoji.textContent = currentAvatar;
+
+            // ============ PEERJS ============
+            function initPeer() {
+                peer = new Peer({
+                    config: {
+                        'iceServers': [
+                            { urls: 'stun:stun.l.google.com:19302' },
+                            { urls: 'stun:stun1.l.google.com:19302' }
+                        ]
+                    }
+                });
+
+                peer.on('open', (id) => {
+                    myPeerId = id;
+                    console.log('🟢 Peer ID:', id);
+                    socket.emit('register', { 
+                        nick: currentNick, 
+                        peerId: id,
+                        avatar: currentAvatar,
+                        socketId: socket.id 
+                    });
+                });
+
+                peer.on('call', (call) => {
+                    console.log('📞 Входящий звонок от:', call.peer);
+                    if (currentCall) {
+                        call.close();
+                        return;
+                    }
+                    
+                    if (!callActive) {
+                        joinCallBtn.classList.add('show');
+                        callBtn.style.display = 'none';
+                        callStatus.classList.add('active');
+                        callStatusText.textContent = '🔔 Входящий звонок!';
+                    }
+                    
+                    window.pendingCall = call;
+                });
+            }
+
+            // ============ НАЧАЛО ОБЩЕГО ЗВОНКА ============
+            function startCall() {
+                if (callActive) {
+                    alert('Звонок уже активен');
+                    return;
+                }
+
+                const onlineList = Object.values(onlineUsers).filter(u => u.socketId !== socket.id);
+                if (onlineList.length === 0) {
+                    alert('Нет других пользователей для звонка');
+                    return;
+                }
+
+                const choice = confirm('Начать общий звонок? Все пользователи чата смогут присоединиться.');
+                if (!choice) return;
+
+                const callTypeChoice = confirm('Нажмите "ОК" для видеозвонка или "Отмена" для голосового');
+                const useVideo = callTypeChoice;
+
+                navigator.mediaDevices.getUserMedia({ 
+                    audio: true, 
+                    video: useVideo 
+                }).then((stream) => {
+                    localStream = stream;
+                    localVideo.srcObject = stream;
+                    
+                    socket.emit('startCall', {
+                        chatId: currentChat,
+                        peerId: myPeerId
+                    });
+                    
+                    callActive = true;
+                    isCallInitiator = true;
+                    callBtn.classList.add('active');
+                    callBtnText.textContent = 'В звонке';
+                    joinCallBtn.classList.remove('show');
+                    callStatus.classList.add('active');
+                    callStatusText.textContent = '🔴 Идет общий звонок';
+                    
+                    callModal.classList.add('active');
+                    callInfo.textContent = '🔴 Общий звонок (вы инициатор)';
+                    updateParticipantsList([socket.id]);
+                    
+                    addCallMessage('📞 ' + currentNick + ' начал общий звонок! Присоединяйтесь!');
+                    
+                }).catch((err) => {
+                    console.error('❌ Ошибка доступа к медиа:', err);
+                    alert('Не удалось получить доступ к микрофону/камере');
+                });
+            }
+
+            // ============ ПРИСОЕДИНИТЬСЯ К ЗВОНКУ ============
+            function joinCall() {
+                if (callActive) {
+                    alert('Вы уже в звонке');
+                    return;
+                }
+
+                if (!window.pendingCall) {
+                    alert('Нет активного звонка для подключения');
+                    return;
+                }
+
+                const call = window.pendingCall;
+                
+                navigator.mediaDevices.getUserMedia({ 
+                    audio: true, 
+                    video: true 
+                }).then((stream) => {
+                    localStream = stream;
+                    localVideo.srcObject = stream;
+                    
+                    call.answer(stream);
+                    currentCall = call;
+                    callActive = true;
+                    isCallInitiator = false;
+                    
+                    call.on('stream', (remoteStream) => {
+                        remoteStream = remoteStream;
+                        remoteVideo.srcObject = remoteStream;
+                    });
+                    
+                    call.on('close', () => {
+                        endCall();
+                    });
+                    
+                    socket.emit('joinCall', {
+                        chatId: currentChat,
+                        peerId: myPeerId
+                    });
+                    
+                    callBtn.classList.add('active');
+                    callBtnText.textContent = 'В звонке';
+                    joinCallBtn.classList.remove('show');
+                    callStatus.classList.add('active');
+                    callStatusText.textContent = '🔴 Вы в общем звонке';
+                    
+                    callModal.classList.add('active');
+                    callInfo.textContent = '🔴 Вы в общем звонке';
+                    
+                    window.pendingCall = null;
+                    
+                    addCallMessage('👤 ' + currentNick + ' присоединился к звонку');
+                    
+                }).catch((err) => {
+                    console.error('❌ Ошибка доступа к медиа:', err);
+                    alert('Не удалось получить доступ к микрофону/камере');
+                });
+            }
+
+            // ============ ЗАВЕРШЕНИЕ ЗВОНКА ============
+            function endCall() {
+                if (currentCall) {
+                    currentCall.close();
+                    currentCall = null;
+                }
+                if (localStream) {
+                    localStream.getTracks().forEach(track => track.stop());
+                    localStream = null;
+                }
+                if (remoteStream) {
+                    remoteStream.getTracks().forEach(track => track.stop());
+                    remoteStream = null;
+                }
+                
+                localVideo.srcObject = null;
+                remoteVideo.srcObject = null;
+                callModal.classList.remove('active');
+                callInfo.textContent = '';
+                callBtn.classList.remove('active');
+                callBtnText.textContent = 'Звонок';
+                joinCallBtn.classList.remove('show');
+                callStatus.classList.remove('active');
+                callActive = false;
+                isCallInitiator = false;
+                isMuted = false;
+                muteBtn.innerHTML = '<i class="fas fa-microphone"></i>';
+                window.pendingCall = null;
+                
+                socket.emit('leaveCall', { chatId: currentChat });
+                
+                addCallMessage('📴 ' + currentNick + ' покинул звонок');
+            }
+
+            // ============ СОБЫТИЯ ЗВОНКА ОТ СЕРВЕРА ============
+            
+            socket.on('callStarted', (data) => {
+                if (data.chatId === currentChat && data.startedBy !== socket.id) {
+                    callPeerId = data.peerId;
+                    callParticipants = data.participants || [];
+                    callStatus.classList.add('active');
+                    callStatusText.textContent = '🔔 ' + data.startedByNick + ' начал общий звонок!';
+                    joinCallBtn.classList.add('show');
+                    callBtn.style.display = 'none';
+                    addCallMessage('📞 ' + data.startedByNick + ' начал общий звонок! Нажми "Присоединиться"');
+                }
+            });
+
+            socket.on('callParticipantJoined', (data) => {
+                if (data.chatId === currentChat && data.participantId !== socket.id) {
+                    callParticipants = data.participants || [];
+                    updateParticipantsList(callParticipants);
+                    if (callActive) {
+                        addCallMessage('👤 ' + data.nick + ' присоединился к звонку');
+                    }
+                }
+            });
+
+            socket.on('callParticipantLeft', (data) => {
+                if (data.chatId === currentChat) {
+                    callParticipants = data.participants || [];
+                    updateParticipantsList(callParticipants);
+                    if (callActive) {
+                        addCallMessage('👤 ' + data.nick + ' покинул звонок');
+                    }
+                    if (callParticipants.length === 0 && callActive) {
+                        addCallMessage('📴 Все участники покинули звонок');
+                        endCall();
+                    }
+                }
+            });
+
+            socket.on('callEnded', (data) => {
+                if (data.chatId === currentChat) {
+                    addCallMessage('📴 Общий звонок завершен');
+                    if (callActive) {
+                        endCall();
+                    }
+                    callStatus.classList.remove('active');
+                    joinCallBtn.classList.remove('show');
+                    callBtn.style.display = 'inline-flex';
+                    callBtnText.textContent = 'Звонок';
+                    callActive = false;
+                }
+            });
+
+            socket.on('callState', (data) => {
+                if (data.chatId === currentChat) {
+                    callParticipants = data.participants || [];
+                    callPeerId = data.peerId;
+                    if (data.participants && data.participants.length > 0) {
+                        callStatus.classList.add('active');
+                        callStatusText.textContent = '🔴 Идет общий звонок (' + data.participants.length + ' уч.)';
+                        if (!callActive && data.startedBy !== socket.id) {
+                            joinCallBtn.classList.add('show');
+                            callBtn.style.display = 'none';
+                        }
+                    }
+                }
+            });
+
+            // ============ ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ============
+            
+            function updateParticipantsList(participants) {
+                const userList = participants.map(id => {
+                    const user = onlineUsers[id];
+                    return user ? user.nick : 'Неизвестный';
+                }).join(' ');
+                participantsList.innerHTML = 'Участники: ' + (userList || 'только вы');
+            }
+
+            function addCallMessage(text) {
+                const div = document.createElement('div');
+                div.className = 'message message-call';
+                div.innerHTML = `<strong>📞</strong> ${text}`;
+                chatWindow.appendChild(div);
+                chatWindow.scrollTop = chatWindow.scrollHeight;
+            }
+
+            // ============ ОБНОВЛЕНИЕ ОНЛАЙН-ПОЛЬЗОВАТЕЛЕЙ ============
+            function updateOnlineUsers() {
+                const users = Object.values(onlineUsers).filter(u => u.socketId !== socket.id);
+                if (users.length === 0) {
+                    onlineUsersDiv.innerHTML = '<div style="color: rgba(255,255,255,0.3); font-size: 0.75rem; padding: 4px;">Нет онлайн-пользователей</div>';
+                    return;
+                }
+                
+                onlineUsersDiv.innerHTML = users.map(u => `
+                    <div class="online-user">
+                        <span class="user-avatar">${u.avatar || '👤'}</span>
+                        <span>${u.nick}</span>
+                        <span class="status-dot"></span>
+                    </div>
+                `).join('');
+            }
+
+            // ============ СОЗДАНИЕ СООБЩЕНИЯ ============
+            function createMessageElement(msg) {
+                const div = document.createElement('div');
+                const isSelf = msg.nick === currentNick;
+                div.className = `message ${isSelf ? 'message-self' : 'message-other'}`;
+                
+                let content = `<strong>${msg.nick || 'Гость'}:</strong> ${msg.message || ''}`;
+                
+                if (msg.media_url) {
+                    const mediaTag = msg.media_type === 'gif' 
+                        ? `<img src="${msg.media_url}" class="msg-gif" alt="gif" loading="lazy" />`
+                        : `<img src="${msg.media_url}" class="msg-img" alt="image" loading="lazy" />`;
+                    content += '<br>' + mediaTag;
+                }
+                
+                div.innerHTML = content;
+                return div;
+            }
+
+            // ============ ОТПРАВКА СООБЩЕНИЯ ============
+            function sendMessage() {
+                const text = msgInput.value.trim();
+                if (!text) return;
+
+                const msgData = {
+                    chatId: currentChat,
+                    message: text,
+                    nick: currentNick,
+                    avatar: currentAvatar
+                };
+
+                socket.emit('sendMessage', msgData);
+                msgInput.value = '';
+                
+                // Оптимистичное добавление
+                const tempMsg = {
+                    nick: currentNick,
+                    message: text,
+                    avatar: currentAvatar
+                };
+                const div = createMessageElement(tempMsg);
+                chatWindow.appendChild(div);
+                chatWindow.scrollTop = chatWindow.scrollHeight;
+                messageCount++;
+                chatBadge.textContent = messageCount;
+            }
+
+            // ============ ОТПРАВКА КАРТИНКИ ============
+            function sendMedia(type) {
+                const urls = {
+                    img: [
+                        'https://picsum.photos/seed/1/300/200',
+                        'https://picsum.photos/seed/2/300/200',
+                        'https://picsum.photos/seed/3/300/200',
+                        'https://picsum.photos/seed/4/300/200',
+                        'https://picsum.photos/seed/5/300/200'
+                    ]
+                };
+
+                const url = urls[type][Math.floor(Math.random() * urls[type].length)];
+                const msgData = {
+                    chatId: currentChat,
+                    message: '🖼️ Картинка',
+                    nick: currentNick,
+                    avatar: currentAvatar,
+                    media: {
+                        url: url,
+                        type: 'img'
+                    }
+                };
+
+                socket.emit('sendMessage', msgData);
+                
+                // Оптимистичное добавление
+                const tempMsg = {
+                    nick: currentNick,
+                    message: '🖼️ Картинка',
+                    media_url: url,
+                    media_type: 'img'
+                };
+                const div = createMessageElement(tempMsg);
+                chatWindow.appendChild(div);
+                chatWindow.scrollTop = chatWindow.scrollHeight;
+                messageCount++;
+                chatBadge.textContent = messageCount;
+            }
+
+            // ============ ЗАГРУЗКА СВОЕЙ КАРТИНКИ ============
+            function uploadOwnImage() {
+                fileInput.click();
+                fileInput.onchange = (e) => {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    const reader = new FileReader();
+                    reader.onload = (ev) => {
+                        const msgData = {
+                            chatId: currentChat,
+                            message: '📷 Своё фото',
+                            nick: currentNick,
+                            avatar: currentAvatar,
+                            media: {
+                                url: ev.target.result,
+                                type: 'img'
+                            }
+                        };
+                        socket.emit('sendMessage', msgData);
+                        
+                        // Оптимистичное добавление
+                        const tempMsg = {
+                            nick: currentNick,
+                            message: '📷 Своё фото',
+                            media_url: ev.target.result,
+                            media_type: 'img'
+                        };
+                        const div = createMessageElement(tempMsg);
+                        chatWindow.appendChild(div);
+                        chatWindow.scrollTop = chatWindow.scrollHeight;
+                        messageCount++;
+                        chatBadge.textContent = messageCount;
+                    };
+                    reader.readAsDataURL(file);
+                    fileInput.value = '';
+                };
+            }
+
+            // ============ WEBSOCKET ============
+            socket.on('connect', () => {
+                console.log('✅ Подключен к серверу');
+                initPeer();
+            });
+
+            socket.on('onlineUsers', (users) => {
+                onlineUsers = users;
+                updateOnlineUsers();
+                if (callActive && callParticipants.length > 0) {
+                    updateParticipantsList(callParticipants);
+                }
+            });
+
+            socket.on('userDisconnected', (socketId) => {
+                delete onlineUsers[socketId];
+                updateOnlineUsers();
+            });
+
+            socket.on('chatHistory', (history) => {
+                chatWindow.innerHTML = '';
+                messageCount = history.length;
+                chatBadge.textContent = messageCount;
+                
+                history.forEach(msg => {
+                    const div = createMessageElement(msg);
+                    chatWindow.appendChild(div);
+                });
+                
+                chatWindow.scrollTop = chatWindow.scrollHeight;
+            });
+
+            socket.on('newMessage', (msg) => {
+                const div = createMessageElement(msg);
+                chatWindow.appendChild(div);
+                chatWindow.scrollTop = chatWindow.scrollHeight;
+                messageCount++;
+                chatBadge.textContent = messageCount;
+            });
+
+            socket.on('error', (msg) => {
+                console.error('❌ Ошибка:', msg);
+                alert('Ошибка: ' + msg);
+            });
+
+            // ============ СОБЫТИЯ КНОПОК ============
+            sendBtn.addEventListener('click', sendMessage);
+            msgInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') sendMessage();
+            });
+
+            addImgBtn.addEventListener('click', () => sendMedia('img'));
+            uploadBtn.addEventListener('click', uploadOwnImage);
+            
+            callBtn.addEventListener('click', startCall);
+            joinCallBtn.addEventListener('click', joinCall);
+            hangupBtn.addEventListener('click', endCall);
+            
+            muteBtn.addEventListener('click', () => {
+                if (localStream) {
+                    isMuted = !isMuted;
+                    localStream.getAudioTracks().forEach(track => {
+                        track.enabled = !isMuted;
+                    });
+                    muteBtn.innerHTML = isMuted ? '<i class="fas fa-microphone-slash"></i>' : '<i class="fas fa-microphone"></i>';
+                }
+            });
+
+            // ============ СМЕНА НИКА ============
+            editNickBtn.addEventListener('click', () => {
+                const newNick = prompt('Введите новый ник:', currentNick);
+                if (newNick && newNick.trim()) {
+                    currentNick = newNick.trim();
+                    nickInput.value = currentNick;
+                    localStorage.setItem('chatNick', currentNick);
+                    if (peer && myPeerId) {
+                        socket.emit('register', { 
+                            nick: currentNick, 
+                            peerId: myPeerId,
+                            avatar: currentAvatar,
+                            socketId: socket.id 
+                        });
+                    }
+                }
+            });
+
+            // ============ СМЕНА АВАТАРА ============
+            avatarWrapper.addEventListener('click', () => {
+                const choice = confirm('Выберите способ:\n\n• Нажмите "ОК" — выбрать эмодзи\n• Нажмите "Отмена" — загрузить фото');
+                if (choice) {
+                    const newEmoji = prompt('Введите эмодзи:', currentAvatar);
+                    if (newEmoji && newEmoji.trim()) {
+                        currentAvatar = newEmoji.trim();
+                        avatarEmoji.textContent = currentAvatar;
+                        avatarImg.style.display = 'none';
+                        avatarEmoji.style.display = 'block';
+                        localStorage.setItem('chatAvatarEmoji', currentAvatar);
+                        if (peer && myPeerId) {
+                            socket.emit('register', { 
+                                nick: currentNick, 
+                                peerId: myPeerId,
+                                avatar: currentAvatar,
+                                socketId: socket.id 
+                            });
+                        }
+                    }
+                } else {
+                    fileInput.click();
+                    fileInput.onchange = (e) => {
+                        const file = e.target.files[0];
+                        if (!file) return;
+                        const reader = new FileReader();
+                        reader.onload = (ev) => {
+                            avatarImg.src = ev.target.result;
+                            avatarImg.style.display = 'block';
+                            avatarEmoji.style.display = 'none';
+                            localStorage.setItem('chatAvatarImage', ev.target.result);
+                            currentAvatar = '🖼️';
+                            if (peer && myPeerId) {
+                                socket.emit('register', { 
+                                    nick: currentNick, 
+                                    peerId: myPeerId,
+                                    avatar: '🖼️',
+                                    socketId: socket.id 
+                                });
+                            }
+                        };
+                        reader.readAsDataURL(file);
+                        fileInput.value = '';
+                    };
+                }
+            });
+
+            // ============ ТЕМЫ ============
+            themeToggles.addEventListener('click', (e) => {
+                const btn = e.target.closest('.theme-btn');
+                if (!btn) return;
+                const theme = btn.dataset.theme;
+                const wrapper = document.querySelector('.app-wrapper');
+                wrapper.className = 'app-wrapper';
+                if (theme !== 'light') {
+                    wrapper.classList.add(`app-${theme}`);
+                }
+                
+                document.querySelectorAll('.theme-btn').forEach(b => {
+                    b.className = 'theme-btn';
+                });
+                btn.classList.add(`active-${theme}`);
+                localStorage.setItem('chatTheme', theme);
+            });
+
+            // Восстановление темы
+            const savedTheme = localStorage.getItem('chatTheme') || 'light';
+            document.querySelector(`.theme-btn[data-theme="${savedTheme}"]`)?.click();
+
+            // Восстановление аватара-картинки
+            try {
+                const savedImage = localStorage.getItem('chatAvatarImage');
+                if (savedImage) {
+                    avatarImg.src = savedImage;
+                    avatarImg.style.display = 'block';
+                    avatarEmoji.style.display = 'none';
+                    currentAvatar = '🖼️';
+                }
+            } catch(e) {}
+
+            // ============ ПРИСОЕДИНЕНИЕ К ЧАТУ ============
+            socket.emit('joinChat', 'main');
+
+            socket.on('connect', () => {
+                if (peer && myPeerId) {
+                    socket.emit('register', { 
+                        nick: currentNick, 
+                        peerId: myPeerId,
+                        avatar: currentAvatar,
+                        socketId: socket.id 
+                    });
+                }
+            });
+
+            console.log('🚀 Bober Chat готов!');
+        })();
+    </script>
+</body>
+</html>

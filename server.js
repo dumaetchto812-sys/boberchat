@@ -2,7 +2,6 @@ const express = require('express');
 const http = require('http');
 const socketIo = require('socket.io');
 const cors = require('cors');
-const { Pool } = require('pg');
 require('dotenv').config();
 
 const app = express();
@@ -14,92 +13,201 @@ const io = socketIo(server, {
     }
 });
 
-// Подключение к CockroachDB
-const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
-    ssl: {
-        rejectUnauthorized: false
-    }
-});
-
 app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
 
-// Инициализация таблиц
-async function initDB() {
-    try {
-        await pool.query(`
-            CREATE TABLE IF NOT EXISTS messages (
-                id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-                chat_id STRING NOT NULL,
-                nick STRING NOT NULL,
-                message TEXT NOT NULL,
-                avatar STRING DEFAULT '👤',
-                media_url TEXT,
-                media_type STRING,
-                created_at TIMESTAMP DEFAULT now()
-            )
-        `);
-        console.log('✅ База данных готова');
-    } catch (err) {
-        console.error('❌ Ошибка БД:', err);
-    }
-}
+// Здоровье-проверка для Render
+app.get('/health', (req, res) => {
+    res.status(200).send('OK');
+});
 
-// Сохранение сообщения
-async function saveMessage(chatId, nick, message, avatar = '👤', media = null) {
-    const result = await pool.query(
-        `INSERT INTO messages (chat_id, nick, message, avatar, media_url, media_type) 
-         VALUES ($1, $2, $3, $4, $5, $6) 
-         RETURNING *`,
-        [chatId, nick, message, avatar, media?.url || null, media?.type || null]
-    );
-    return result.rows[0];
-}
+// Храним сообщения в памяти
+let messages = { main: [] };
+let callRooms = {};
 
-// Получение истории
-async function getHistory(chatId) {
-    const result = await pool.query(
-        `SELECT * FROM messages 
-         WHERE chat_id = $1 
-         ORDER BY created_at DESC 
-         LIMIT 100`,
-        [chatId]
-    );
-    return result.rows.reverse();
-}
-
-// WebSocket
 io.on('connection', (socket) => {
     console.log('🟢 Подключен:', socket.id);
 
-    socket.on('joinChat', async (chatId) => {
-        socket.join(chatId);
-        const history = await getHistory(chatId);
-        socket.emit('chatHistory', history);
+    socket.on('register', (data) => {
+        socket.data.nick = data.nick || 'Гость';
+        socket.data.peerId = data.peerId;
+        socket.data.avatar = data.avatar || '👤';
+        console.log(`👤 ${socket.data.nick} зарегистрирован`);
+        io.emit('onlineUsers', getOnlineUsers());
     });
 
-    socket.on('sendMessage', async (data) => {
-        const { chatId, message, nick, avatar, media } = data;
-        const saved = await saveMessage(chatId, nick, message, avatar, media);
-        io.to(chatId).emit('newMessage', saved);
+    socket.on('joinChat', (chatId) => {
+        socket.join(chatId);
+        socket.data.currentChat = chatId;
+        console.log(`📌 ${socket.data.nick} присоединился к чату ${chatId}`);
+        
+        if (messages[chatId]) {
+            socket.emit('chatHistory', messages[chatId]);
+        } else {
+            messages[chatId] = [];
+            socket.emit('chatHistory', []);
+        }
+    });
+
+    socket.on('sendMessage', (data) => {
+        try {
+            const { chatId, message, nick, avatar, media } = data;
+            console.log(`📨 ${nick}: ${message}`);
+            
+            const msgData = {
+                id: Date.now(),
+                nick: nick || 'Гость',
+                message: message || '',
+                avatar: avatar || '👤',
+                media_url: media?.url || null,
+                media_type: media?.type || null,
+                created_at: new Date().toISOString()
+            };
+            
+            if (!messages[chatId]) messages[chatId] = [];
+            messages[chatId].push(msgData);
+            
+            io.to(chatId).emit('newMessage', msgData);
+        } catch (err) {
+            console.error('Ошибка отправки:', err);
+            socket.emit('error', 'Не удалось отправить сообщение');
+        }
+    });
+
+    // ============ ЗВОНКИ ============
+    socket.on('startCall', (data) => {
+        const { chatId, peerId } = data;
+        const nick = socket.data.nick || 'Гость';
+        
+        if (callRooms[chatId] && callRooms[chatId].participants.length > 0) {
+            socket.emit('error', 'Звонок уже активен');
+            return;
+        }
+        
+        callRooms[chatId] = {
+            participants: [socket.id],
+            peerId: peerId,
+            startedBy: socket.id,
+            startedByNick: nick
+        };
+        
+        io.to(chatId).emit('callStarted', {
+            chatId: chatId,
+            peerId: peerId,
+            startedBy: socket.id,
+            startedByNick: nick,
+            participants: callRooms[chatId].participants
+        });
+        
+        console.log(`📞 ${nick} начал звонок в ${chatId}`);
+    });
+
+    socket.on('joinCall', (data) => {
+        const { chatId, peerId } = data;
+        const nick = socket.data.nick || 'Гость';
+        
+        if (callRooms[chatId]) {
+            if (!callRooms[chatId].participants.includes(socket.id)) {
+                callRooms[chatId].participants.push(socket.id);
+            }
+            if (peerId) callRooms[chatId].peerId = peerId;
+            
+            io.to(chatId).emit('callParticipantJoined', {
+                chatId: chatId,
+                participantId: socket.id,
+                nick: nick,
+                peerId: peerId,
+                participants: callRooms[chatId].participants
+            });
+            
+            socket.emit('callState', {
+                chatId: chatId,
+                peerId: callRooms[chatId].peerId,
+                participants: callRooms[chatId].participants,
+                startedBy: callRooms[chatId].startedBy,
+                startedByNick: callRooms[chatId].startedByNick
+            });
+            
+            console.log(`👤 ${nick} присоединился к звонку в ${chatId}`);
+        }
+    });
+
+    socket.on('leaveCall', (data) => {
+        const { chatId } = data;
+        const nick = socket.data.nick || 'Гость';
+        
+        if (callRooms[chatId]) {
+            callRooms[chatId].participants = callRooms[chatId].participants.filter(id => id !== socket.id);
+            
+            io.to(chatId).emit('callParticipantLeft', {
+                chatId: chatId,
+                participantId: socket.id,
+                nick: nick,
+                participants: callRooms[chatId].participants
+            });
+            
+            if (callRooms[chatId].participants.length === 0) {
+                io.to(chatId).emit('callEnded', { chatId: chatId });
+                delete callRooms[chatId];
+                console.log(`📞 Звонок в ${chatId} завершен`);
+            } else {
+                console.log(`👤 ${nick} покинул звонок в ${chatId}`);
+            }
+        }
+    });
+
+    socket.on('endCall', (data) => {
+        const { chatId } = data;
+        if (callRooms[chatId] && callRooms[chatId].startedBy === socket.id) {
+            io.to(chatId).emit('callEnded', { chatId: chatId });
+            delete callRooms[chatId];
+            console.log(`📞 Звонок в ${chatId} завершен инициатором`);
+        } else {
+            socket.emit('error', 'Только инициатор может завершить звонок');
+        }
     });
 
     socket.on('disconnect', () => {
         console.log('🔴 Отключен:', socket.id);
+        for (const chatId in callRooms) {
+            if (callRooms[chatId].participants.includes(socket.id)) {
+                callRooms[chatId].participants = callRooms[chatId].participants.filter(id => id !== socket.id);
+                if (callRooms[chatId].participants.length === 0) {
+                    io.to(chatId).emit('callEnded', { chatId: chatId });
+                    delete callRooms[chatId];
+                } else {
+                    io.to(chatId).emit('callParticipantLeft', {
+                        chatId: chatId,
+                        participantId: socket.id,
+                        nick: socket.data.nick || 'Гость',
+                        participants: callRooms[chatId].participants
+                    });
+                }
+            }
+        }
+        io.emit('onlineUsers', getOnlineUsers());
     });
 });
 
-// REST API
-app.get('/api/history/:chatId', async (req, res) => {
-    const history = await getHistory(req.params.chatId);
-    res.json(history);
-});
+function getOnlineUsers() {
+    const users = {};
+    const sockets = io.sockets.sockets;
+    for (const [id, socket] of sockets) {
+        if (socket.data && socket.data.nick) {
+            users[id] = {
+                socketId: id,
+                nick: socket.data.nick,
+                peerId: socket.data.peerId,
+                avatar: socket.data.avatar || '👤'
+            };
+        }
+    }
+    return users;
+}
 
 const PORT = process.env.PORT || 3000;
-initDB().then(() => {
-    server.listen(PORT, () => {
-        console.log(`🚀 Сервер на http://localhost:${PORT}`);
-    });
+server.listen(PORT, () => {
+    console.log(`🚀 Сервер запущен на порту ${PORT}`);
+    console.log(`🌐 Открой http://localhost:${PORT}`);
 });

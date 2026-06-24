@@ -1,0 +1,1167 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bober Chat</title>
+    <script src="https://cdn.socket.io/4.5.0/socket.io.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            transition: background 0.25s ease, color 0.2s ease, border-color 0.2s, box-shadow 0.2s;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: radial-gradient(circle at 20% 30%, #1a1a2e, #16213e);
+            padding: 16px;
+        }
+
+        .app-wrapper {
+            display: flex;
+            gap: 16px;
+            max-width: 1100px;
+            width: 100%;
+            align-items: flex-start;
+        }
+
+        /* ===== БОКОВАЯ ПАНЕЛЬ ===== */
+        .sidebar {
+            flex: 0 0 220px;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 32px;
+            padding: 20px 14px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        .sidebar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .sidebar::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.1);
+            border-radius: 12px;
+        }
+        .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+        }
+
+        .sidebar-title {
+            color: rgba(255,255,255,0.6);
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 16px;
+            padding-left: 6px;
+        }
+
+        .chat-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .chat-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            border-radius: 16px;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid transparent;
+            transition: 0.2s;
+            color: rgba(255,255,255,0.7);
+        }
+        .chat-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+        }
+        .chat-item.active {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.15);
+            color: #fff;
+        }
+        .chat-item i {
+            font-size: 1.1rem;
+            width: 24px;
+            text-align: center;
+        }
+        .chat-item .chat-name {
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        .chat-item .chat-badge {
+            margin-left: auto;
+            background: rgba(255, 215, 0, 0.2);
+            color: #f7d794;
+            font-size: 0.65rem;
+            padding: 2px 8px;
+            border-radius: 20px;
+        }
+
+        /* ===== ОСНОВНОЙ ЧАТ ===== */
+        .chat-app {
+            flex: 1;
+            min-width: 0;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-radius: 48px 48px 32px 32px;
+            padding: 24px 24px 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            background-image: linear-gradient(135deg, rgba(255, 215, 0, 0.05), rgba(255, 100, 200, 0.05), rgba(0, 200, 255, 0.05));
+            background-size: 300% 300%;
+            animation: shimmer 8s ease-in-out infinite alternate;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 100% 100%; }
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 800;
+            font-size: 1.3rem;
+            letter-spacing: 0.5px;
+            color: #fff;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            transition: color 0.3s;
+        }
+        .brand i { font-size: 1.6rem; }
+        .brand span { transition: color 0.3s; }
+
+        .theme-toggles {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 6px 10px;
+            border-radius: 60px;
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .theme-btn {
+            background: transparent;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            color: rgba(255, 255, 255, 0.7);
+            transition: 0.2s;
+            white-space: nowrap;
+        }
+        .theme-btn i { font-size: 0.9rem; }
+        .theme-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+            color: #fff;
+        }
+
+        .theme-btn.active-light {
+            background: rgba(255, 255, 255, 0.25);
+            color: #111;
+            box-shadow: 0 0 12px rgba(255, 255, 255, 0.4);
+        }
+        .theme-btn.active-dark {
+            background: rgba(0, 0, 0, 0.5);
+            color: #f0f0f0;
+            box-shadow: 0 0 12px rgba(0, 0, 0, 0.5);
+        }
+        .theme-btn.active-red {
+            background: rgba(255, 0, 0, 0.25);
+            color: #ffdddd;
+            box-shadow: 0 0 16px rgba(255, 0, 0, 0.3);
+        }
+        .theme-btn.active-blue {
+            background: rgba(0, 100, 255, 0.25);
+            color: #ddeeff;
+            box-shadow: 0 0 16px rgba(0, 100, 255, 0.3);
+        }
+        .theme-btn.active-green {
+            background: rgba(0, 200, 100, 0.25);
+            color: #ddffdd;
+            box-shadow: 0 0 16px rgba(0, 200, 100, 0.3);
+        }
+        .theme-btn.active-purple {
+            background: rgba(180, 0, 255, 0.25);
+            color: #f0ddff;
+            box-shadow: 0 0 16px rgba(180, 0, 255, 0.3);
+        }
+
+        .profile-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 6px 16px 6px 8px;
+            border-radius: 60px;
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .avatar-wrapper {
+            position: relative;
+            cursor: pointer;
+            width: 42px;
+            height: 42px;
+            border-radius: 60px;
+            overflow: hidden;
+            flex-shrink: 0;
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: white;
+            text-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        }
+        .avatar-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .avatar-wrapper .avatar-emoji {
+            font-size: 1.6rem;
+            line-height: 1;
+        }
+        .avatar-wrapper .avatar-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: 0.2s;
+            border-radius: 60px;
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        .avatar-wrapper:hover .avatar-overlay {
+            opacity: 1;
+        }
+
+        .nick-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        #nickDisplay {
+            font-weight: 600;
+            font-size: 1rem;
+            color: #fff;
+            letter-spacing: 0.3px;
+            background: transparent;
+            border: none;
+            max-width: 110px;
+            padding: 4px 0;
+            border-bottom: 2px solid transparent;
+            transition: 0.2s;
+        }
+        #nickDisplay:focus {
+            outline: none;
+            border-bottom-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .nick-edit-btn {
+            background: transparent;
+            border: none;
+            color: rgba(255, 255, 255, 0.6);
+            cursor: pointer;
+            padding: 4px 6px;
+            border-radius: 30px;
+            transition: 0.2s;
+        }
+        .nick-edit-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .chat-window {
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(4px);
+            border-radius: 32px;
+            padding: 20px 18px;
+            margin: 18px 0 16px;
+            min-height: 320px;
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            scroll-behavior: smooth;
+        }
+        .chat-window::-webkit-scrollbar {
+            width: 5px;
+        }
+        .chat-window::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.1);
+            border-radius: 12px;
+        }
+        .chat-window::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+        }
+
+        .message {
+            padding: 10px 16px;
+            border-radius: 24px;
+            max-width: 85%;
+            word-break: break-word;
+            background: rgba(255, 255, 255, 0.07);
+            backdrop-filter: blur(2px);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            color: #f0f0f0;
+            animation: fadeUp 0.3s ease;
+        }
+        .message strong {
+            color: #f7d794;
+            margin-right: 6px;
+        }
+        .message .msg-gif, .message .msg-img {
+            max-width: 100%;
+            border-radius: 20px;
+            margin-top: 6px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .message .msg-gif { max-height: 160px; }
+        .message .msg-img { max-height: 180px; }
+        .message-self {
+            align-self: flex-end;
+            background: rgba(255, 215, 0, 0.15);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+        }
+        .message-other { align-self: flex-start; }
+        .message-bot {
+            align-self: flex-start;
+            background: rgba(100, 200, 255, 0.1);
+            border: 1px solid rgba(100, 200, 255, 0.15);
+        }
+        .message-bot strong {
+            color: #7fc9ff;
+        }
+
+        @keyframes fadeUp {
+            0% { opacity: 0; transform: translateY(8px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .input-area {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 6px;
+            align-items: center;
+        }
+        .input-area input[type="text"] {
+            flex: 2 1 200px;
+            padding: 14px 18px;
+            border-radius: 60px;
+            border: none;
+            background: rgba(0, 0, 0, 0.25);
+            backdrop-filter: blur(4px);
+            color: #fff;
+            font-size: 0.95rem;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: 0.2s;
+        }
+        .input-area input[type="text"]::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+        .input-area input[type="text"]:focus {
+            outline: none;
+            border-color: rgba(255, 215, 0, 0.4);
+            background: rgba(0, 0, 0, 0.35);
+        }
+
+        .action-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(4px);
+            padding: 12px 16px;
+            border-radius: 60px;
+            color: #eee;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 0.95rem;
+        }
+        .action-btn i { font-size: 1rem; }
+        .action-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: scale(1.02);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+        .action-btn.send-btn {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            border: none;
+            color: white;
+            box-shadow: 0 6px 14px rgba(245, 87, 108, 0.3);
+        }
+        .action-btn.send-btn:hover {
+            transform: scale(1.04);
+            box-shadow: 0 8px 20px rgba(245, 87, 108, 0.5);
+        }
+        .action-btn.gif-btn {
+            background: rgba(0, 200, 255, 0.15);
+            border-color: rgba(0, 200, 255, 0.2);
+        }
+        .action-btn.img-btn {
+            background: rgba(0, 255, 150, 0.1);
+            border-color: rgba(0, 255, 150, 0.15);
+        }
+        .action-btn.upload-btn {
+            background: rgba(255, 200, 0, 0.1);
+            border-color: rgba(255, 200, 0, 0.15);
+        }
+        #fileInput {
+            display: none;
+        }
+
+        /* ===== ЦВЕТНЫЕ ТЕМЫ ===== */
+        .app-light .sidebar {
+            background: rgba(255, 255, 255, 0.5);
+            border-color: rgba(0,0,0,0.05);
+        }
+        .app-light .sidebar-title { color: #555; }
+        .app-light .chat-item { color: #333; }
+        .app-light .chat-item:hover { background: rgba(0,0,0,0.05); color: #111; }
+        .app-light .chat-item.active {
+            background: rgba(0,0,0,0.08);
+            border-color: rgba(0,0,0,0.1);
+            color: #111;
+        }
+
+        .app-light .chat-app {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(12px);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+        .app-light .chat-window {
+            background: rgba(0, 0, 0, 0.03);
+            border-color: rgba(0, 0, 0, 0.05);
+        }
+        .app-light .message {
+            background: rgba(255, 255, 255, 0.5);
+            color: #1a1a1a;
+            border-color: rgba(0, 0, 0, 0.04);
+        }
+        .app-light .message strong { color: #b45f06; }
+        .app-light #nickDisplay { color: #111; }
+        .app-light .profile-area {
+            background: rgba(0, 0, 0, 0.03);
+            border-color: rgba(0,0,0,0.05);
+        }
+        .app-light .input-area input[type="text"] {
+            background: rgba(255, 255, 255, 0.5);
+            color: #111;
+            border-color: rgba(0,0,0,0.05);
+        }
+        .app-light .input-area input[type="text"]::placeholder { color: #444; }
+        .app-light .action-btn {
+            color: #222;
+            background: rgba(255,255,255,0.4);
+            border-color: rgba(0,0,0,0.05);
+        }
+        .app-light .action-btn.send-btn { color: white; }
+        .app-light .theme-btn { color: #222; }
+        .app-light .theme-btn.active-light {
+            background: rgba(0,0,0,0.1);
+            color: #111;
+            box-shadow: 0 0 12px rgba(0,0,0,0.1);
+        }
+        .app-light .nick-edit-btn { color: #333; }
+        .app-light .brand { color: #222; }
+        .app-light .chat-item .chat-badge { background: rgba(0,0,0,0.08); color: #555; }
+
+        .app-dark .sidebar {
+            background: rgba(0, 0, 0, 0.4);
+            border-color: rgba(255,255,255,0.05);
+        }
+        .app-dark .sidebar-title { color: #888; }
+        .app-dark .chat-item { color: #ccc; }
+        .app-dark .chat-item:hover { background: rgba(255,255,255,0.05); color: #fff; }
+        .app-dark .chat-item.active {
+            background: rgba(255,255,255,0.08);
+            border-color: rgba(255,255,255,0.08);
+            color: #fff;
+        }
+
+        .app-dark .chat-app {
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(12px);
+            border-color: rgba(255, 255, 255, 0.05);
+        }
+        .app-dark .chat-window {
+            background: rgba(0, 0, 0, 0.4);
+            border-color: rgba(255, 255, 255, 0.03);
+        }
+        .app-dark .message {
+            background: rgba(30, 30, 40, 0.6);
+            color: #eaeaea;
+            border-color: rgba(255, 255, 255, 0.03);
+        }
+        .app-dark .message strong { color: #f7d794; }
+        .app-dark #nickDisplay { color: #eee; }
+        .app-dark .profile-area {
+            background: rgba(0, 0, 0, 0.25);
+            border-color: rgba(255,255,255,0.05);
+        }
+        .app-dark .input-area input[type="text"] {
+            background: rgba(0, 0, 0, 0.4);
+            color: #eee;
+            border-color: rgba(255,255,255,0.05);
+        }
+        .app-dark .input-area input[type="text"]::placeholder { color: #888; }
+        .app-dark .action-btn {
+            color: #ccc;
+            background: rgba(255,255,255,0.05);
+            border-color: rgba(255,255,255,0.05);
+        }
+        .app-dark .action-btn.send-btn { color: white; }
+        .app-dark .theme-btn { color: #aaa; }
+        .app-dark .theme-btn.active-dark {
+            background: rgba(255, 255, 255, 0.15);
+            color: #fff;
+            box-shadow: 0 0 12px rgba(255, 255, 255, 0.1);
+        }
+        .app-dark .nick-edit-btn { color: #aaa; }
+        .app-dark .brand { color: #eee; }
+
+        .app-red .sidebar {
+            background: rgba(180, 20, 20, 0.3);
+            border-color: rgba(255, 80, 80, 0.15);
+        }
+        .app-red .sidebar-title { color: #ffaaaa; }
+        .app-red .chat-item { color: #ffcccc; }
+        .app-red .chat-item:hover { background: rgba(255,80,80,0.1); color: #fff; }
+        .app-red .chat-item.active {
+            background: rgba(255,80,80,0.15);
+            border-color: rgba(255,80,80,0.2);
+            color: #fff;
+        }
+
+        .app-red .chat-app {
+            background: rgba(180, 20, 20, 0.35);
+            backdrop-filter: blur(12px);
+            border-color: rgba(255, 80, 80, 0.25);
+            box-shadow: 0 20px 40px rgba(180, 0, 0, 0.3);
+        }
+        .app-red .chat-window {
+            background: rgba(100, 0, 0, 0.2);
+            border-color: rgba(255, 80, 80, 0.1);
+        }
+        .app-red .message {
+            background: rgba(200, 50, 50, 0.2);
+            color: #ffe0e0;
+            border-color: rgba(255, 80, 80, 0.1);
+        }
+        .app-red .message strong { color: #ffb0b0; }
+        .app-red #nickDisplay { color: #ffdddd; }
+        .app-red .profile-area {
+            background: rgba(100, 0, 0, 0.2);
+            border-color: rgba(255, 80, 80, 0.15);
+        }
+        .app-red .input-area input[type="text"] {
+            background: rgba(100, 0, 0, 0.2);
+            color: #ffdddd;
+            border-color: rgba(255, 80, 80, 0.15);
+        }
+        .app-red .input-area input[type="text"]::placeholder { color: #cc8888; }
+        .app-red .action-btn {
+            color: #ffcccc;
+            background: rgba(180, 0, 0, 0.15);
+            border-color: rgba(255, 80, 80, 0.1);
+        }
+        .app-red .action-btn.send-btn { 
+            background: linear-gradient(135deg, #ff6b6b, #c0392b);
+            color: white;
+        }
+        .app-red .theme-btn { color: #ffbbbb; }
+        .app-red .theme-btn.active-red {
+            background: rgba(255, 0, 0, 0.3);
+            color: #fff;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.4);
+        }
+        .app-red .nick-edit-btn { color: #ffaaaa; }
+        .app-red .brand { color: #ffcccc; }
+        .app-red .chat-item .chat-badge { background: rgba(255,80,80,0.2); color: #ffaaaa; }
+
+        .app-blue .sidebar {
+            background: rgba(20, 60, 180, 0.3);
+            border-color: rgba(80, 150, 255, 0.15);
+        }
+        .app-blue .sidebar-title { color: #88bbdd; }
+        .app-blue .chat-item { color: #bbddff; }
+        .app-blue .chat-item:hover { background: rgba(80,150,255,0.1); color: #fff; }
+        .app-blue .chat-item.active {
+            background: rgba(80,150,255,0.15);
+            border-color: rgba(80,150,255,0.2);
+            color: #fff;
+        }
+
+        .app-blue .chat-app {
+            background: rgba(20, 60, 180, 0.35);
+            backdrop-filter: blur(12px);
+            border-color: rgba(80, 150, 255, 0.25);
+            box-shadow: 0 20px 40px rgba(0, 40, 180, 0.3);
+        }
+        .app-blue .chat-window {
+            background: rgba(0, 30, 120, 0.2);
+            border-color: rgba(80, 150, 255, 0.1);
+        }
+        .app-blue .message {
+            background: rgba(50, 100, 220, 0.2);
+            color: #ddeeff;
+            border-color: rgba(80, 150, 255, 0.1);
+        }
+        .app-blue .message strong { color: #aacdff; }
+        .app-blue #nickDisplay { color: #ddeeff; }
+        .app-blue .profile-area {
+            background: rgba(0, 30, 120, 0.2);
+            border-color: rgba(80, 150, 255, 0.15);
+        }
+        .app-blue .input-area input[type="text"] {
+            background: rgba(0, 30, 120, 0.2);
+            color: #ddeeff;
+            border-color: rgba(80, 150, 255, 0.15);
+        }
+        .app-blue .input-area input[type="text"]::placeholder { color: #88aadd; }
+        .app-blue .action-btn {
+            color: #bbddff;
+            background: rgba(0, 60, 200, 0.15);
+            border-color: rgba(80, 150, 255, 0.1);
+        }
+        .app-blue .action-btn.send-btn {
+            background: linear-gradient(135deg, #4a8eff, #1a5bbf);
+            color: white;
+        }
+        .app-blue .theme-btn { color: #bbddff; }
+        .app-blue .theme-btn.active-blue {
+            background: rgba(0, 100, 255, 0.3);
+            color: #fff;
+            box-shadow: 0 0 20px rgba(0, 100, 255, 0.4);
+        }
+        .app-blue .nick-edit-btn { color: #88bbee; }
+        .app-blue .brand { color: #bbddff; }
+
+        .app-green .sidebar {
+            background: rgba(20, 140, 60, 0.3);
+            border-color: rgba(80, 255, 150, 0.15);
+        }
+        .app-green .sidebar-title { color: #88dd88; }
+        .app-green .chat-item { color: #bbffbb; }
+        .app-green .chat-item:hover { background: rgba(80,255,150,0.1); color: #fff; }
+        .app-green .chat-item.active {
+            background: rgba(80,255,150,0.15);
+            border-color: rgba(80,255,150,0.2);
+            color: #fff;
+        }
+
+        .app-green .chat-app {
+            background: rgba(20, 140, 60, 0.35);
+            backdrop-filter: blur(12px);
+            border-color: rgba(80, 255, 150, 0.25);
+            box-shadow: 0 20px 40px rgba(0, 140, 40, 0.3);
+        }
+        .app-green .chat-window {
+            background: rgba(0, 100, 30, 0.2);
+            border-color: rgba(80, 255, 150, 0.1);
+        }
+        .app-green .message {
+            background: rgba(50, 200, 100, 0.2);
+            color: #ddffdd;
+            border-color: rgba(80, 255, 150, 0.1);
+        }
+        .app-green .message strong { color: #aaffaa; }
+        .app-green #nickDisplay { color: #ddffdd; }
+        .app-green .profile-area {
+            background: rgba(0, 100, 30, 0.2);
+            border-color: rgba(80, 255, 150, 0.15);
+        }
+        .app-green .input-area input[type="text"] {
+            background: rgba(0, 100, 30, 0.2);
+            color: #ddffdd;
+            border-color: rgba(80, 255, 150, 0.15);
+        }
+        .app-green .input-area input[type="text"]::placeholder { color: #88dd88; }
+        .app-green .action-btn {
+            color: #bbffbb;
+            background: rgba(0, 180, 60, 0.15);
+            border-color: rgba(80, 255, 150, 0.1);
+        }
+        .app-green .action-btn.send-btn {
+            background: linear-gradient(135deg, #4caf50, #2e7d32);
+            color: white;
+        }
+        .app-green .theme-btn { color: #bbffbb; }
+        .app-green .theme-btn.active-green {
+            background: rgba(0, 200, 100, 0.3);
+            color: #fff;
+            box-shadow: 0 0 20px rgba(0, 200, 100, 0.4);
+        }
+        .app-green .nick-edit-btn { color: #88ee88; }
+        .app-green .brand { color: #bbffbb; }
+
+        .app-purple .sidebar {
+            background: rgba(120, 20, 180, 0.3);
+            border-color: rgba(200, 100, 255, 0.15);
+        }
+        .app-purple .sidebar-title { color: #bb88dd; }
+        .app-purple .chat-item { color: #ddbbff; }
+        .app-purple .chat-item:hover { background: rgba(200,100,255,0.1); color: #fff; }
+        .app-purple .chat-item.active {
+            background: rgba(200,100,255,0.15);
+            border-color: rgba(200,100,255,0.2);
+            color: #fff;
+        }
+
+        .app-purple .chat-app {
+            background: rgba(120, 20, 180, 0.35);
+            backdrop-filter: blur(12px);
+            border-color: rgba(200, 100, 255, 0.25);
+            box-shadow: 0 20px 40px rgba(100, 0, 180, 0.3);
+        }
+        .app-purple .chat-window {
+            background: rgba(80, 0, 130, 0.2);
+            border-color: rgba(200, 100, 255, 0.1);
+        }
+        .app-purple .message {
+            background: rgba(150, 50, 220, 0.2);
+            color: #f0ddff;
+            border-color: rgba(200, 100, 255, 0.1);
+        }
+        .app-purple .message strong { color: #dbb0ff; }
+        .app-purple #nickDisplay { color: #f0ddff; }
+        .app-purple .profile-area {
+            background: rgba(80, 0, 130, 0.2);
+            border-color: rgba(200, 100, 255, 0.15);
+        }
+        .app-purple .input-area input[type="text"] {
+            background: rgba(80, 0, 130, 0.2);
+            color: #f0ddff;
+            border-color: rgba(200, 100, 255, 0.15);
+        }
+        .app-purple .input-area input[type="text"]::placeholder { color: #bb88dd; }
+        .app-purple .action-btn {
+            color: #ddbbff;
+            background: rgba(140, 0, 200, 0.15);
+            border-color: rgba(200, 100, 255, 0.1);
+        }
+        .app-purple .action-btn.send-btn {
+            background: linear-gradient(135deg, #b46aff, #7b2fbe);
+            color: white;
+        }
+        .app-purple .theme-btn { color: #ddbbff; }
+        .app-purple .theme-btn.active-purple {
+            background: rgba(180, 0, 255, 0.3);
+            color: #fff;
+            box-shadow: 0 0 20px rgba(180, 0, 255, 0.4);
+        }
+        .app-purple .nick-edit-btn { color: #bb88ee; }
+        .app-purple .brand { color: #ddbbff; }
+
+        @media (max-width: 800px) {
+            .app-wrapper {
+                flex-direction: column;
+            }
+            .sidebar {
+                flex: none;
+                width: 100%;
+                max-height: 120px;
+                overflow-y: auto;
+                padding: 12px 14px;
+                border-radius: 24px;
+            }
+            .chat-list {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+            .chat-item {
+                flex: 0 1 auto;
+                padding: 6px 14px;
+            }
+            .chat-item .chat-badge {
+                display: none;
+            }
+            .sidebar-title {
+                margin-bottom: 8px;
+                font-size: 0.6rem;
+            }
+        }
+        @media (max-width: 500px) {
+            .chat-app { padding: 16px; }
+            .header { flex-direction: column; align-items: stretch; }
+            .theme-toggles { justify-content: center; }
+            .profile-area { justify-content: center; }
+            .brand { font-size: 1.1rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-wrapper">
+        <!-- ===== БОКОВАЯ ПАНЕЛЬ ===== -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-title"><i class="fas fa-comments"></i> Чаты</div>
+            <div class="chat-list" id="chatList">
+                <div class="chat-item active" data-chat="main">
+                    <i class="fas fa-home"></i>
+                    <span class="chat-name">Общий чат</span>
+                    <span class="chat-badge">5</span>
+                </div>
+                <div class="chat-item" data-chat="bot">
+                    <i class="fas fa-robot"></i>
+                    <span class="chat-name">Помощник</span>
+                    <span class="chat-badge">🤖</span>
+                </div>
+                <div class="chat-item" data-chat="fun">
+                    <i class="fas fa-party-horn"></i>
+                    <span class="chat-name">Развлекательный</span>
+                </div>
+                <div class="chat-item" data-chat="work">
+                    <i class="fas fa-briefcase"></i>
+                    <span class="chat-name">Рабочий</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== ОСНОВНОЙ ЧАТ ===== -->
+        <div class="chat-app" id="chatApp">
+            <div class="header">
+                <div class="brand" id="brandLogo">
+                    <i class="fas fa-crown"></i>
+                    <span id="brandText">Bober Chat</span>
+                </div>
+
+                <div class="theme-toggles" id="themeToggles">
+                    <button class="theme-btn active-light" data-theme="light"><i class="fas fa-sun"></i> Светлая</button>
+                    <button class="theme-btn" data-theme="dark"><i class="fas fa-moon"></i> Тёмная</button>
+                    <button class="theme-btn" data-theme="red"><i class="fas fa-heart"></i> Красная</button>
+                    <button class="theme-btn" data-theme="blue"><i class="fas fa-droplet"></i> Синяя</button>
+                    <button class="theme-btn" data-theme="green"><i class="fas fa-leaf"></i> Зелёная</button>
+                    <button class="theme-btn" data-theme="purple"><i class="fas fa-gem"></i> Фиолет</button>
+                </div>
+
+                <div class="profile-area">
+                    <div class="avatar-wrapper" id="avatarWrapper">
+                        <div class="avatar-emoji" id="avatarEmoji">👤</div>
+                        <img id="avatarImg" style="display:none;" alt="avatar" />
+                        <div class="avatar-overlay"><i class="fas fa-camera"></i></div>
+                    </div>
+                    <div class="nick-wrapper">
+                        <input type="text" id="nickDisplay" value="Гость" maxlength="20" spellcheck="false">
+                        <button class="nick-edit-btn" id="editNickBtn" title="Сменить ник"><i class="fas fa-pen"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chat-window" id="chatWindow">
+                <div class="message message-other"><strong>🤖 Бот:</strong> Добро пожаловать в Bober Chat! Выбери чат слева.</div>
+            </div>
+
+            <div class="input-area">
+                <input type="text" id="msgInput" placeholder="Напиши сообщение..." />
+                <button class="action-btn send-btn" id="sendMsgBtn"><i class="fas fa-paper-plane"></i> Отправить</button>
+                <button class="action-btn gif-btn" id="addGifBtn"><i class="fas fa-film"></i> GIF</button>
+                <button class="action-btn img-btn" id="addImgBtn"><i class="fas fa-image"></i> Картинка</button>
+                <button class="action-btn upload-btn" id="uploadBtn"><i class="fas fa-upload"></i> Своё</button>
+                <input type="file" id="fileInput" accept="image/*">
+            </div>
+
+            <div style="margin-top: 12px; text-align: center; font-size: 0.75rem; opacity: 0.4; color: #ccc;">
+                <i class="fas fa-arrow-right"></i> Нажми на аватар чтобы сменить
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            'use strict';
+
+            // ============ ПОДКЛЮЧЕНИЕ К СЕРВЕРУ ============
+            const socket = io();
+
+            // ============ DOM ЭЛЕМЕНТЫ ============
+            const chatWindow = document.getElementById('chatWindow');
+            const msgInput = document.getElementById('msgInput');
+            const sendBtn = document.getElementById('sendMsgBtn');
+            const addGifBtn = document.getElementById('addGifBtn');
+            const addImgBtn = document.getElementById('addImgBtn');
+            const uploadBtn = document.getElementById('uploadBtn');
+            const fileInput = document.getElementById('fileInput');
+            const nickInput = document.getElementById('nickDisplay');
+            const editNickBtn = document.getElementById('editNickBtn');
+            const avatarWrapper = document.getElementById('avatarWrapper');
+            const avatarEmoji = document.getElementById('avatarEmoji');
+            const avatarImg = document.getElementById('avatarImg');
+            const themeToggles = document.getElementById('themeToggles');
+            const chatList = document.getElementById('chatList');
+
+            // ============ ПЕРЕМЕННЫЕ ============
+            let currentNick = localStorage.getItem('chatNick') || 'Гость';
+            let currentAvatar = localStorage.getItem('chatAvatarEmoji') || '👤';
+            let currentChat = 'main';
+            let chatMessages = { main: [], bot: [], fun: [], work: [] };
+
+            // ============ ИНИЦИАЛИЗАЦИЯ ============
+            nickInput.value = currentNick;
+            avatarEmoji.textContent = currentAvatar;
+
+            // ============ ПОДКЛЮЧЕНИЕ К ЧАТУ ============
+            function joinChat(chatId) {
+                currentChat = chatId;
+                socket.emit('joinChat', chatId);
+                
+                document.querySelectorAll('.chat-item').forEach(el => {
+                    el.classList.toggle('active', el.dataset.chat === chatId);
+                });
+            }
+
+            // ============ ПОЛУЧЕНИЕ ИСТОРИИ ============
+            socket.on('chatHistory', (history) => {
+                chatWindow.innerHTML = '';
+                chatMessages[currentChat] = [];
+                
+                history.forEach(msg => {
+                    const div = createMessageElement(msg);
+                    chatWindow.appendChild(div);
+                    chatMessages[currentChat].push(div);
+                });
+                
+                chatWindow.scrollTop = chatWindow.scrollHeight;
+            });
+
+            // ============ НОВОЕ СООБЩЕНИЕ ============
+            socket.on('newMessage', (msg) => {
+                const div = createMessageElement(msg);
+                chatWindow.appendChild(div);
+                chatMessages[currentChat].push(div);
+                chatWindow.scrollTop = chatWindow.scrollHeight;
+            });
+
+            // ============ СОЗДАНИЕ СООБЩЕНИЯ ============
+            function createMessageElement(msg) {
+                const div = document.createElement('div');
+                const isSelf = msg.nick === currentNick;
+                div.className = `message ${isSelf ? 'message-self' : 'message-other'}`;
+                
+                let content = `<strong>${msg.nick || 'Гость'}:</strong> ${msg.message || ''}`;
+                
+                if (msg.media_url) {
+                    const mediaTag = msg.media_type === 'gif' 
+                        ? `<img src="${msg.media_url}" class="msg-gif" alt="gif" loading="lazy" />`
+                        : `<img src="${msg.media_url}" class="msg-img" alt="image" loading="lazy" />`;
+                    content += '<br>' + mediaTag;
+                }
+                
+                div.innerHTML = content;
+                return div;
+            }
+
+            // ============ ОТПРАВКА СООБЩЕНИЯ ============
+            function sendMessage() {
+                const text = msgInput.value.trim();
+                if (!text) return;
+
+                const msgData = {
+                    chatId: currentChat,
+                    message: text,
+                    nick: currentNick,
+                    avatar: currentAvatar
+                };
+
+                socket.emit('sendMessage', msgData);
+                msgInput.value = '';
+            }
+
+            // ============ ОТПРАВКА МЕДИА ============
+            function sendMedia(type) {
+                const urls = {
+                    gif: [
+                        'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExY2VrM2Z3b3EzNnUydGg3dW5wZ3JzY3p1eG8yd3JpNXV6eWZhb2wyMSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3o7btT1T9qQO0S8c9S/giphy.gif',
+                        'https://media.giphy.com/media/3o6Zt4z6z0QbPzZ4z6/giphy.gif'
+                    ],
+                    img: [
+                        'https://picsum.photos/seed/1/300/200',
+                        'https://picsum.photos/seed/2/300/200'
+                    ]
+                };
+
+                const url = urls[type][Math.floor(Math.random() * urls[type].length)];
+                const msgData = {
+                    chatId: currentChat,
+                    message: type === 'gif' ? '🎞️ Гифка' : '🖼️ Картинка',
+                    nick: currentNick,
+                    avatar: currentAvatar,
+                    media: {
+                        url: url,
+                        type: type
+                    }
+                };
+
+                socket.emit('sendMessage', msgData);
+            }
+
+            // ============ ЗАГРУЗКА СВОЕЙ КАРТИНКИ ============
+            function uploadOwnImage() {
+                fileInput.click();
+                fileInput.onchange = (e) => {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    const reader = new FileReader();
+                    reader.onload = (ev) => {
+                        const msgData = {
+                            chatId: currentChat,
+                            message: '📷 Своё фото',
+                            nick: currentNick,
+                            avatar: currentAvatar,
+                            media: {
+                                url: ev.target.result,
+                                type: 'img'
+                            }
+                        };
+                        socket.emit('sendMessage', msgData);
+                    };
+                    reader.readAsDataURL(file);
+                    fileInput.value = '';
+                };
+            }
+
+            // ============ СОБЫТИЯ ============
+            sendBtn.addEventListener('click', sendMessage);
+            msgInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') sendMessage();
+            });
+
+            addGifBtn.addEventListener('click', () => sendMedia('gif'));
+            addImgBtn.addEventListener('click', () => sendMedia('img'));
+            uploadBtn.addEventListener('click', uploadOwnImage);
+
+            // Переключение чатов
+            chatList.addEventListener('click', (e) => {
+                const item = e.target.closest('.chat-item');
+                if (!item) return;
+                const chatId = item.dataset.chat;
+                if (chatId && chatId !== currentChat) {
+                    joinChat(chatId);
+                }
+            });
+
+            // Смена ника
+            editNickBtn.addEventListener('click', () => {
+                const newNick = prompt('Введите новый ник:', currentNick);
+                if (newNick && newNick.trim()) {
+                    currentNick = newNick.trim();
+                    nickInput.value = currentNick;
+                    localStorage.setItem('chatNick', currentNick);
+                }
+            });
+
+            // Смена аватара
+            avatarWrapper.addEventListener('click', () => {
+                const choice = confirm('Выберите способ:\n\n• Нажмите "ОК" — выбрать эмодзи\n• Нажмите "Отмена" — загрузить фото');
+                if (choice) {
+                    const newEmoji = prompt('Введите эмодзи:', currentAvatar);
+                    if (newEmoji && newEmoji.trim()) {
+                        currentAvatar = newEmoji.trim();
+                        avatarEmoji.textContent = currentAvatar;
+                        avatarImg.style.display = 'none';
+                        avatarEmoji.style.display = 'block';
+                        localStorage.setItem('chatAvatarEmoji', currentAvatar);
+                    }
+                } else {
+                    fileInput.click();
+                    fileInput.onchange = (e) => {
+                        const file = e.target.files[0];
+                        if (!file) return;
+                        const reader = new FileReader();
+                        reader.onload = (ev) => {
+                            avatarImg.src = ev.target.result;
+                            avatarImg.style.display = 'block';
+                            avatarEmoji.style.display = 'none';
+                            localStorage.setItem('chatAvatarImage', ev.target.result);
+                        };
+                        reader.readAsDataURL(file);
+                        fileInput.value = '';
+                    };
+                }
+            });
+
+            // ============ ТЕМЫ ============
+            themeToggles.addEventListener('click', (e) => {
+                const btn = e.target.closest('.theme-btn');
+                if (!btn) return;
+                const theme = btn.dataset.theme;
+                const wrapper = document.querySelector('.app-wrapper');
+                wrapper.className = 'app-wrapper';
+                if (theme !== 'light') {
+                    wrapper.classList.add(`app-${theme}`);
+                }
+                
+                document.querySelectorAll('.theme-btn').forEach(b => {
+                    b.className = 'theme-btn';
+                });
+                btn.classList.add(`active-${theme}`);
+                localStorage.setItem('chatTheme', theme);
+            });
+
+            // Восстановление темы
+            const savedTheme = localStorage.getItem('chatTheme') || 'light';
+            document.querySelector(`.theme-btn[data-theme="${savedTheme}"]`)?.click();
+
+            // Восстановление аватара-картинки
+            try {
+                const savedImage = localStorage.getItem('chatAvatarImage');
+                if (savedImage) {
+                    avatarImg.src = savedImage;
+                    avatarImg.style.display = 'block';
+                    avatarEmoji.style.display = 'none';
+                }
+            } catch(e) {}
+
+            // ============ ЗАПУСК ============
+            joinChat('main');
+
+            console.log('🚀 Bober Chat подключен к серверу!');
+        })();
+    </script>
+</body>
+</html>
